@@ -12,8 +12,8 @@ taptrain.Preloader = function() {
   
     
     var btn = new lime.GlossyButton('S\u0101kt sp\u0113li')
-      .setPosition(0,taptrain.HEIGHT * 0.5 - 40)
-      .setSize(300, 38)
+      .setPosition(0,taptrain.HEIGHT * 0.5 - 200)
+      .setSize(300, 50)
       .setColor("#0000EE")
       .setFontColor("#fff")
       .setRenderer(lime.Renderer.CANVAS);

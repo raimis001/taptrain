@@ -10,6 +10,7 @@ goog.require('lime.animation.FadeTo');
 goog.require('lime.animation.ScaleTo');
 goog.require('lime.animation.MoveTo');
 goog.require('lime.animation.Easing');
+goog.require('lime.animation.RotateBy');
 
 goog.require('lime.transitions.SlideInDown');
 goog.require('lime.transitions.SlideInUp');
@@ -26,12 +27,15 @@ goog.require('taptrain.Preloader');
 goog.require('taptrain.Gamescene');
 goog.require('taptrain.Depo');
 goog.require('taptrain.Train');
+goog.require('taptrain.Star');
+goog.require('taptrain.Hud');
 
 taptrain.WIDTH = 600;
 taptrain.HEIGHT  = 1024;
 
 taptrain.Event = {
-  DEPO:"open_depo"
+  DEPO:"open_depo",
+  DEPO_CLOSE:"close_depo"
 }
 
 taptrain.start = function(){

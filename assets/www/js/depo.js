@@ -12,7 +12,7 @@ taptrain.Depo = function(vType) {
     this.setPosition(set.pos.x, taptrain.HEIGHT * 0.5 - 80 + set.pos.y)
         
     var circle = new lime.Circle()
-      .setSize(75,75)
+      .setSize(85,85)
       .setFill(set.color)
     ;
     
@@ -30,7 +30,7 @@ taptrain.Depo = function(vType) {
     goog.events.listen(circle, ['mousedown','touchstart'], function(e) {
       e.stopPropagation();
       t.doorManipulate(true);
-      
+      t.dispatchEvent({type: taptrain.Event.DEPO});
 //      e.swallow(['mouseup','touchend'],function(){
 //        t.doorManipulate(false);
 //      }, false, this);
@@ -40,7 +40,7 @@ taptrain.Depo = function(vType) {
     goog.events.listen(taptrain.director, ['mouseup','touchend','touchcancel'], function() {
       if (t.depo_opened) {
         t.doorManipulate(false);
-        t.dispatchEvent({type: taptrain.Event.DEPO});
+        t.dispatchEvent({type: taptrain.Event.DEPO_CLOSE});
       }
     }, false, this);
 

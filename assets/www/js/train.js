@@ -8,8 +8,8 @@ taptrain.Train = function() {
     
     var set = taptrain.Depo.settings[this.train_type];
     
-    var posE = new goog.math.Coordinate(0, taptrain.HEIGHT * 0.5 - 80);
-    var posS = new goog.math.Coordinate(0,taptrain.HEIGHT * -0.5 + 50);
+    var posE = new goog.math.Coordinate(0,48);// taptrain.HEIGHT * 0.5 - 80);
+    var posS = new goog.math.Coordinate(0,-480);
     
     //console.log(this.getPosition());
     
@@ -18,8 +18,9 @@ taptrain.Train = function() {
       .setFill(set.color)
     ;    
   
-    var frame = new lime.fill.Frame('media/images/train.png', 0, 0, 160, 160); //x , y, width, height
+    var frame = new lime.fill.Frame('media/images/trains.png', this.train_type * 70, 0, 70, 126); //x , y, width, height
     var train = new lime.Sprite()
+      .setAnchorPoint(0.5,0.3)
       .setFill(frame)
     ;
     
@@ -52,16 +53,70 @@ taptrain.Train.prototype.setDepo = function(vDepo) {
 }
 
 taptrain.Train.prototype.endMove = function() {
-  //this.removeChild(this);
+
+  var posE;
+  switch (taptrain.selected_depo) {
+    case -1:
+    case 1:
+      posE = taptrain.sceneGame.getDepo(1).getPosition();
+      this.move  = new lime.animation.MoveTo(posE).setDuration(1.8).setEasing(lime.animation.Easing.LINEAR);
+      break;
+    case 0:
+      posE = taptrain.sceneGame.getDepo(0).getPosition();
+      this.move  = new lime.animation.Sequence(
+        new lime.animation.Spawn(
+          new lime.animation.MoveBy(0,96).setDuration(0.3).setEasing(lime.animation.Easing.LINEAR),
+          new lime.animation.RotateBy(-90).setDuration(0.3).setEasing(lime.animation.Easing.LINEAR)
+        ),
+        new lime.animation.MoveBy(-96,0).setDuration(0.6).setEasing(lime.animation.Easing.LINEAR),
+        new lime.animation.Spawn(
+          new lime.animation.MoveBy(-96,0).setDuration(0.3).setEasing(lime.animation.Easing.LINEAR),
+          new lime.animation.RotateBy(90).setDuration(0.3).setEasing(lime.animation.Easing.LINEAR)
+        ),
+        new lime.animation.MoveBy(0,288).setDuration(1).setEasing(lime.animation.Easing.LINEAR)
+      )
+      break;
+    case 2:
+      posE = taptrain.sceneGame.getDepo(2).getPosition();
+      this.move  = new lime.animation.Sequence(
+        new lime.animation.Spawn(
+          new lime.animation.MoveBy(0,96).setDuration(0.3).setEasing(lime.animation.Easing.LINEAR),
+          new lime.animation.RotateBy(90).setDuration(0.3).setEasing(lime.animation.Easing.LINEAR)
+        ),
+        new lime.animation.MoveBy(96,0).setDuration(0.6).setEasing(lime.animation.Easing.LINEAR),
+        new lime.animation.Spawn(
+          new lime.animation.MoveBy(96,0).setDuration(0.3).setEasing(lime.animation.Easing.LINEAR),
+          new lime.animation.RotateBy(-90).setDuration(0.3).setEasing(lime.animation.Easing.LINEAR)
+        ),
+        new lime.animation.MoveBy(0,288).setDuration(1).setEasing(lime.animation.Easing.LINEAR)
+      )
+      break;
+  }
   
-  var myevent = new goog.events.Event('stop_train'); 
-  myevent.currentTarget = this;
-  taptrain.director.eventDispatcher.handleEvent(myevent); 
+  this.runAction(this.move);
+  goog.events.listen(this.move, lime.animation.Event.STOP, this.stopMove ,false, this);
+  
   
   //this.scale.stop();
 }
-
+taptrain.Train.prototype.stopMove = function() {
+  
+  var myevent = new goog.events.Event('stop_train'); 
+  myevent.currentTarget = this;
+  
+  if (taptrain.selected_depo != this.train_type ) {
+    this.move = new lime.animation.MoveBy(0,288).setDuration(1).setEasing(lime.animation.Easing.LINEAR)
+    this.runAction(this.move);
+    goog.events.listen(this.move, lime.animation.Event.STOP, this.deleteTrain ,false, this);
+    
+    myevent.victory = 0;
+  } else {
+    myevent.victory = 1;
+  }
+  
+  taptrain.director.eventDispatcher.handleEvent(myevent); 
+  
+}
 taptrain.Train.prototype.deleteTrain = function() {
-  this.scale.stop();
-  goog.events.unlisten(this.scale, lime.animation.Event.STOP, this.endMove ,false, this);
+  this.getParent().removeChild(this);
 }
